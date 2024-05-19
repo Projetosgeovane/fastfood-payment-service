@@ -1,17 +1,39 @@
-service: serverless-example
+service: fastfood-payment-service
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-plugin-existing-cloudfront-lambda-edge
+
 provider:
   name: aws
   runtime: nodejs18.x
+  apiGateway:
+    restApiId: d0ewo299u4
+    restApiRootResourceId: cbegvswvsj
+  timeout: 60
+
 functions:
   main:
     handler: dist/src/lambda.handler
     events:
       - http:
           method: ANY
-          path: /
-      - http:
-          method: ANY
-          path: '{proxy+}'
+          path: 'fps/{proxy+}'
+          cors: true
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: 'AWS::ApiGateway::RestApi'
+      Properties:
+        Name: ExistingApiGateway
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+      DeletionPolicy: Retain
+
+custom:
+  existingApiGateway:
+    restApiId: d0ewo299u4
+    restApiRootResourceId: cbegvswvsj
