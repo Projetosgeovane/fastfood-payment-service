@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -13,18 +14,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Client {
+model Payment {
   id String @id @default(uuid())
 
-  name      String
-  cpf       String    @unique
-  email     String    @unique
-  phone     String
-  password  String
-  status    Boolean   @default(true)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  orderId       String    @unique @map("order_id")
+  status        String    @default("pending")
+  amount        Float
+  paymentMethod String?   @map("payment_method")
+  transactionId String?   @map("transaction_id")
+  payerEmail    String?   @map("payer_email")
+  payerId       String?   @map("payer_id")
+  paymentDate   DateTime? @map("payment_date")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
 
-  @@map("clients")
+  @@map("payments")
 }
