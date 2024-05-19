@@ -6,5 +6,4 @@ export abstract class BaseRepository<T> {
   abstract findManyRecent(page: PaginationParams): Promise<T[]>;
   abstract findById(id: string): Promise<T | null>;
   abstract delete(id: string): Promise<void>;
-  abstract softDelete(id: string): Promise<void>;
 }

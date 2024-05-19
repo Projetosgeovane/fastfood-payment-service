@@ -42,6 +42,9 @@ export class CreatePaymentUseCase {
 
     await this.paymentRepository.create(payment);
 
-    return paymentPreference;
+    return success({
+      statusCode: 201,
+      data: paymentPreference,
+    });
   }
 }

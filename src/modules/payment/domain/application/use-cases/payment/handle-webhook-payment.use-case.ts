@@ -32,7 +32,6 @@ export class HandleWebhookPaymentUseCase {
         },
       },
     );
-    console.log('response', response.data);
     const paymentDetails = response.data.results[0];
 
     const payment = await this.paymentRepository.findByTransactionId(orderId);
@@ -46,9 +45,12 @@ export class HandleWebhookPaymentUseCase {
       await this.paymentRepository.save(payment);
 
       // Atualiza o status do pedido no serviço de Order
-      await axios.put(`http://localhost:3000/order/${orderId}`, {
-        status: paymentDetails.status,
-      });
+      await axios.put(
+        `https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fos/order/${orderId}`,
+        {
+          status: paymentDetails.status,
+        },
+      );
     }
 
     return success({});

@@ -1,7 +1,7 @@
 import { Optional } from '@enablers/core/types';
 import { Entity, UniqueEntityID } from '../../../../../libs/core/src/entities';
 
-interface PaymentEntityProps {
+export interface PaymentEntityProps {
   orderId: string;
   status: string;
   amount: number;
