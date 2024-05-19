@@ -12,6 +12,8 @@ provider:
     restApiId: d0ewo299u4
     restApiRootResourceId: cbegvswvsj
   timeout: 60
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
 
 functions:
   main:
