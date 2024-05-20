@@ -14,26 +14,27 @@ export class CreatePaymentController {
 
   @Post('payment')
   async handle(@Body() body: CreatePaymentDTO) {
-    const { totalAmount, id, paymentMethod } = body;
+    const { totalAmount, id, paymentMethod, products } = body;
 
     const result = await this.createPaymentUseCase.execute({
       amount: totalAmount,
       orderId: id,
       paymentMethod,
+      products,
     });
 
-    // if (result.isFailure()) {
-    //   const error = result.value;
+    if (result.isFailure()) {
+      const error = result.value;
 
-    //   switch (error.constructor) {
-    //     case Error: {
-    //       throw new ConflictException(error.message);
-    //     }
-    //     default: {
-    //       throw new BadRequestException();
-    //     }
-    //   }
-    // }
+      switch (error.constructor) {
+        case Error: {
+          throw new ConflictException(error.message);
+        }
+        default: {
+          throw new BadRequestException();
+        }
+      }
+    }
 
     return result;
   }

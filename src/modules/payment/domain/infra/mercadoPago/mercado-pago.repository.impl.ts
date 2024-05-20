@@ -1,23 +1,27 @@
 import axios from 'axios';
 import { MercadoPagoRepository } from '../../application/repositories/mercado-pago.repository';
-import { PaymentEntity } from '../../enterprise/payment.entity';
 
+interface ProductItem {
+  title: string;
+  quantity: number;
+  unit_price: number;
+}
+
+interface PaymentEntity {
+  orderId: string;
+  amount: number;
+  products: ProductItem[];
+}
 export class MercadoPagoRepositoryImpl implements MercadoPagoRepository {
   async createPaymentPreference({
     orderId,
-    amount,
+    products,
   }: PaymentEntity): Promise<any> {
     const preference = {
-      items: [
-        {
-          title: `Order ${orderId}`,
-          quantity: 1,
-          unit_price: amount,
-        },
-      ],
-      external_reference: orderId, // Inclui o orderId como referência externa
+      items: products,
+      external_reference: orderId,
       notification_url:
-        'https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fps/webhook/payment', // URL do webhook
+        'https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fps/webhook/payment',
     };
 
     try {
@@ -31,7 +35,7 @@ export class MercadoPagoRepositoryImpl implements MercadoPagoRepository {
         },
       );
 
-      return response.data.init_point; //
+      return response.data.sandbox_init_point;
     } catch (error) {
       return error;
     }

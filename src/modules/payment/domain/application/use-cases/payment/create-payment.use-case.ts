@@ -4,9 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { Either, success } from '@enablers/core/types';
 import { PaymentRepository } from '../../repositories/payment.repository';
 import { MercadoPagoRepository } from '../../repositories/mercado-pago.repository';
+
+interface ProductItem {
+  title: string;
+  quantity: number;
+  unit_price: number;
+}
+
 interface PaymentRequest {
   orderId: string;
   amount: number;
+  products: ProductItem[];
   paymentMethod: string;
 }
 
@@ -19,19 +27,13 @@ export class CreatePaymentUseCase {
   ) {}
 
   async execute(dto: PaymentRequest): Promise<PaymentResponse> {
-    const { orderId, amount } = dto;
-
-    // const paymentAlreadyExists =
-    //   await this.paymentRepository.findByTransactionId(transactionId);
-
-    // if (paymentAlreadyExists) {
-    //   return failure(new ResourceExistsError('Name already exists'));
-    // }
+    const { amount, orderId, products } = dto;
 
     const paymentPreference =
       await this.mercadoPagoRepository.createPaymentPreference({
-        orderId,
         amount,
+        orderId,
+        products,
       });
 
     const payment = PaymentEntity.instance({
@@ -44,7 +46,7 @@ export class CreatePaymentUseCase {
 
     return success({
       statusCode: 201,
-      data: paymentPreference,
+      paymentLink: paymentPreference,
     });
   }
 }
