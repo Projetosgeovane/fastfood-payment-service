@@ -28,24 +28,31 @@ jobs:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: npx prisma generate
 
+    - name: Run tests and generate coverage
+      run: |
+        yarn global add nyc
+        yarn coverage
+
     - name: Build project
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: yarn build
 
-    - name: Run SonarCloud Scanner
+    - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORG_KEY: ${{ secrets.SONAR_ORG_KEY }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
-        npx sonar-scanner \
+        yarn global add sonar-scanner
+        sonar-scanner \
           -Dsonar.organization=${{ secrets.SONAR_ORG_KEY }} \
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-          -Dsonar.sources=./src \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sources=src \
+          -Dsonar.tests=test \
+          -Dsonar.test.inclusions="**/*.spec.ts,**/*.test.ts" \
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+          -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
 
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
