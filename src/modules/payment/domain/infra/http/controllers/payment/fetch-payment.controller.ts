@@ -1,12 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { PaymentsPresenter } from '../../presenters/payments.presenter';
 import { FetchPaymentUseCase } from 'src/modules/payment/domain/application/use-cases/payment/fetch-payment.use-case';
 
@@ -18,7 +10,7 @@ export class FetchPaymentController {
     const result = await this.fetchPaymentUseCase.execute({ id });
 
     if (result.isFailure()) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
 
     const payments = PaymentsPresenter.toHTTP(result.value.payment);
