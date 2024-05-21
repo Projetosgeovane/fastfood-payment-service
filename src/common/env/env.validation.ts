@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsString, validateSync } from 'class-validator';
+import { validateSync } from 'class-validator';
 
 // enum Environment {
 //   Development = 'development',
@@ -12,7 +12,6 @@ export class EnvVariables {
   // @IsEnum(Environment)
   // NODE_ENV: Environment;
 
-  @IsString()
   DATABASE_URL: string;
 
   // @IsNumber()
