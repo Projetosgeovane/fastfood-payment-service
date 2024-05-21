@@ -30,8 +30,7 @@ jobs:
 
     - name: Run tests and generate coverage
       run: |
-        yarn global add nyc
-        yarn coverage
+        yarn tes:cov
 
     - name: Build project
       env:

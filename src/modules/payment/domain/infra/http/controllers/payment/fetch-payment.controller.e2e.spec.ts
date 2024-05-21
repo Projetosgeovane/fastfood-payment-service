@@ -13,7 +13,7 @@ describe('FetchPaymentsByIdController', () => {
   let paymentFactory: PaymentFactory;
   let prisma: PrismaService;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [PaymentFactory],
@@ -28,53 +28,23 @@ describe('FetchPaymentsByIdController', () => {
   });
 
   test('[GET] /fps/payment/id', async () => {
-    await paymentFactory.makePrismaPayment({
+    const payment = await paymentFactory.makePrismaPayment({
       amount: faker.number.int(),
       orderId: randomUUID(),
       status: 'PENDING',
     });
-    await paymentFactory.makePrismaPayment({
-      amount: faker.number.int(),
-      orderId: randomUUID(),
-      status: 'PENDING',
-    });
-    await paymentFactory.makePrismaPayment({
-      amount: faker.number.int(),
-      orderId: randomUUID(),
-      status: 'PENDING',
-    });
+    const paymentId = payment.id.toValue();
 
     const response = await request(app.getHttpServer())
-      .get('/fps/payment/id')
-      .query({
-        param: 'id',
-      })
+      .get(`/fps/payment/${paymentId}`)
       .send();
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.payments).toHaveLength(2);
 
-    const paymentOnDatabase = await prisma.payment.findMany();
-
-    expect(paymentOnDatabase).toHaveLength(3);
-
-    const response2 = await request(app.getHttpServer())
-      .get('/fps/payment/id')
-      .query({
-        param: 'id',
-      })
+    const invalidResponse = await request(app.getHttpServer())
+      .get('/fps/payment/invalid-id')
       .send();
 
-    expect(response2.statusCode).toBe(200);
-    expect(response2.body.payments).toHaveLength(0);
-
-    const response3 = await request(app.getHttpServer())
-      .get('/fps/payment/id')
-      .query({
-        param: '',
-      })
-      .send();
-
-    expect(response3.statusCode).toBe(400);
+    expect(invalidResponse.statusCode).toBe(404);
   });
 });

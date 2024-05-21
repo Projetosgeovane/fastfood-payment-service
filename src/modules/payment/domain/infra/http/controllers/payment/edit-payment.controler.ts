@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
   NotFoundException,
   Param,
   Put,
@@ -14,6 +15,7 @@ export class EditPaymentController {
   constructor(private readonly editPaymentUseCase: EditPaymentUseCase) {}
 
   @Put('payment/:paymentId')
+  @HttpCode(204)
   async handle(@Param('paymentId') id: string, @Body() body: EditPaymentDTO) {
     const { status } = body;
 
