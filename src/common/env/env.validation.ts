@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsString, validateSync } from 'class-validator';
+import { validateSync } from 'class-validator';
 
 // enum Environment {
 //   Development = 'development',
@@ -12,7 +12,6 @@ export class EnvVariables {
   // @IsEnum(Environment)
   // NODE_ENV: Environment;
 
-  @IsString()
   DATABASE_URL: string;
 
   // @IsNumber()
@@ -24,12 +23,12 @@ export function validate(config: Record<string, unknown>) {
     enableImplicitConversion: true,
   });
 
-  const errors = validateSync(validatedConfig, {
-    skipMissingProperties: false,
-  });
+  // const errors = validateSync(validatedConfig, {
+  //   skipMissingProperties: false,
+  // });
 
-  if (errors.length > 0) {
-    throw new Error(errors.toString());
-  }
+  // if (errors.length > 0) {
+  //   throw new Error(errors.toString());
+  // }
   return validatedConfig;
 }
