@@ -21,7 +21,8 @@ export class MercadoPagoRepositoryImpl implements MercadoPagoRepository {
       items: products,
       external_reference: orderId,
       notification_url:
-        'https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fps/webhook/payment',
+        // 'https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fps/webhook/payment',
+        'https://0be6-177-39-99-30.ngrok-free.app/fps/webhook/payment',
     };
 
     try {

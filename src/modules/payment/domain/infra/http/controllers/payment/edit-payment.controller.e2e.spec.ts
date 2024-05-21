@@ -28,15 +28,12 @@ describe('Edit Device Type (e2e)', () => {
   test('[PUT] /payment', async () => {
     const payment = await paymentFactory.makePrismaPayment({
       amount: 100,
-      orderId: 'aew8c1a9g4g4q9wa5dd9a6ds5',
       status: 'PENDING',
     });
 
     const response = await request(app.getHttpServer())
       .put(`/fps/payment/${payment.id.toValue()}`)
       .send({
-        amount: 50,
-        orderId: 'aew8c1a9g4g4q9wa5dd9a6ds5',
         status: 'approved',
       });
 

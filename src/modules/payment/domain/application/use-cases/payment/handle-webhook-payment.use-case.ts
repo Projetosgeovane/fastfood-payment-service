@@ -39,12 +39,12 @@ export class HandleWebhookPaymentUseCase {
       payment.status = paymentDetails.status;
       payment.paymentDate = new Date(paymentDetails.date_approved);
       payment.paymentMethod = paymentDetails.payment_type;
+      payment.transactionId = paymentDetails.collector_id;
       payment.payerEmail = paymentDetails.payer.email;
       payment.payerId = paymentDetails.payer.id;
 
       await this.paymentRepository.save(payment);
 
-      // Atualiza o status do pedido no serviço de Order
       await axios.put(
         `https://d0ewo299u4.execute-api.us-east-1.amazonaws.com/dev/fos/order/${orderId}`,
         {
