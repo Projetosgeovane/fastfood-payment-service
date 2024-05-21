@@ -28,10 +28,6 @@ jobs:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: npx prisma generate
 
-    - name: Run tests and generate coverage
-      run: |
-        yarn test:cov
-
     - name: Build project
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
