@@ -8,7 +8,7 @@ import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import request from 'supertest';
 import { PaymentFactory } from 'test/factories/make-payment.factory';
 
-describe('FetchPaymentsController', () => {
+describe('FetchPaymentsByIdController', () => {
   let app: INestApplication;
   let paymentFactory: PaymentFactory;
   let prisma: PrismaService;
@@ -28,26 +28,23 @@ describe('FetchPaymentsController', () => {
   });
 
   test('[GET] /fps/payment/id', async () => {
-    await paymentFactory.makePrismaPayment({
+    const payment = await paymentFactory.makePrismaPayment({
       amount: faker.number.int(),
       orderId: randomUUID(),
       status: 'PENDING',
     });
-    await paymentFactory.makePrismaPayment({
-      amount: faker.number.int(),
-      orderId: randomUUID(),
-      status: 'PENDING',
-    });
-    await paymentFactory.makePrismaPayment({
-      amount: faker.number.int(),
-      orderId: randomUUID(),
-      status: 'PENDING',
-    });
+    const paymentId = payment.id.toValue();
 
     const response = await request(app.getHttpServer())
-      .get('/fps/payments?page=1')
+      .get(`/fps/payment/${paymentId}`)
       .send();
 
     expect(response.statusCode).toBe(200);
+
+    const invalidResponse = await request(app.getHttpServer())
+      .get('/fps/payment/invalid-id')
+      .send();
+
+    expect(invalidResponse.statusCode).toBe(404);
   });
 });

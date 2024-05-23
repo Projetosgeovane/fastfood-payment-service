@@ -98,4 +98,8 @@ export class PaymentEntity extends Entity<PaymentEntityProps> {
   set payerId(payerId: string) {
     this.props.payerId = payerId;
   }
+
+  set transactionId(transactionId: string) {
+    this.props.transactionId = transactionId;
+  }
 }
