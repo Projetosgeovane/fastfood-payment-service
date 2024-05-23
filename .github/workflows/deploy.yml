@@ -33,6 +33,11 @@ jobs:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: yarn build
 
+    - name: Build project
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: yarn test:cov
+
     - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

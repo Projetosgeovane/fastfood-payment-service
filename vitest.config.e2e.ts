@@ -9,8 +9,10 @@ export default defineConfig({
     root: './',
     setupFiles: ['./test/setup-e2e.ts'],
     coverage: {
+      reporter: ['text', 'lcov'],
       provider: 'v8',
       include: ['**/src/modules/**/infra/**'],
+      reportsDirectory: './coverage/e2e',
     },
   },
   plugins: [
