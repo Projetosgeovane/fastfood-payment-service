@@ -7,8 +7,10 @@ export default defineConfig({
     globals: true,
     root: './',
     coverage: {
+      reporter: ['text', 'lcov'],
       provider: 'v8',
       include: ['**/src/modules/**/domain/**'],
+      reportsDirectory: './coverage/unit',
     },
   },
   plugins: [
