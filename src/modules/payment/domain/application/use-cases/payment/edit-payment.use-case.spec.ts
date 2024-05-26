@@ -4,6 +4,7 @@ import {
 } from 'test/factories/make-in-memory-repositories.factory';
 import { EditPaymentUseCase } from './edit-payment.use-case';
 import { makePayment } from 'test/factories/make-payment.factory';
+import { ResourceNotFoundError } from '@enablers/core/errors';
 
 describe('EditPaymentUseCase', () => {
   let inMemory: InMemoryRepositoriesProps;
@@ -35,5 +36,18 @@ describe('EditPaymentUseCase', () => {
       payment.id.toValue(),
     );
     expect(result.isSuccess()).toBe(true);
+  });
+
+  it('should return an error if payment is not found', async () => {
+    const request = {
+      id: 'nonexistent-id',
+      status: 'approved',
+    };
+
+    const result = (await sut.execute(request)) as any;
+
+    expect(result.isFailure()).toBe(true);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+    expect(result.value.message).toBe('Payment not found');
   });
 });

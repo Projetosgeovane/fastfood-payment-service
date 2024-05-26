@@ -1,13 +1,16 @@
-import { INestApplication } from '@nestjs/common';
+import { BadRequestException, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { DatabaseModule } from 'src/common/database/database.module';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
+import { CreatePaymentUseCase } from 'src/modules/payment/domain/application/use-cases/payment/create-payment.use-case';
 import request from 'supertest';
+import { describe, expect, beforeAll, vi } from 'vitest';
 
 describe('Create Network (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
+  let createPaymentUseCase: CreatePaymentUseCase;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -18,11 +21,44 @@ describe('Create Network (e2e)', () => {
     app = moduleRef.createNestApplication();
 
     prisma = moduleRef.get(PrismaService);
+    createPaymentUseCase = moduleRef.get(CreatePaymentUseCase);
 
     await app.init();
   });
 
   test('[POST] /fps/payment', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/fps/payment')
+      .send({
+        id: '2314142141414141452',
+        totalAmount: 100,
+        paymentMethod: 'credit-card',
+        products: [
+          {
+            title: 'string',
+            quantity: 1,
+            unit_price: 1,
+          },
+        ],
+      });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body.value).toHaveProperty('paymentLink');
+
+    const paymentOnDatabase = await prisma.payment.findUnique({
+      where: {
+        orderId: '2314142141414141452',
+      },
+    });
+
+    expect(paymentOnDatabase.amount).toBe(100);
+  });
+
+  test('[POST] /fps/payment - NotFoundException', async () => {
+    vi.spyOn(createPaymentUseCase, 'execute').mockImplementationOnce(() => {
+      throw new BadRequestException();
+    });
+
     const response = await request(app.getHttpServer())
       .post('/fps/payment')
       .send({
@@ -38,36 +74,6 @@ describe('Create Network (e2e)', () => {
         ],
       });
 
-    expect(response.statusCode).toBe(201);
-
-    const paymentOnDatabase = await prisma.payment.findUnique({
-      where: {
-        orderId: '23141421414141414524',
-      },
-    });
-
-    expect(paymentOnDatabase).toBeTruthy();
-
-    // const responseWithCode = await request(app.getHttpServer())
-    //   .post('/api_v1/network')
-    //   .send({
-    //     name: 'lorem-ipson-with-code',
-    //     networkTypeID: 'SIGFOX',
-    //     parserEnabled: false,
-    //     code: 'string-code',
-    //   });
-
-    // expect(responseWithCode.statusCode).toBe(201);
-
-    // const networkWithCodeOnDatabase = await prisma.read.network.findUnique({
-    //   where: {
-    //     name: 'lorem-ipson-with-code',
-    //   },
-    // });
-
-    // expect(networkWithCodeOnDatabase).toBeTruthy();
-    // expect(networkWithCodeOnDatabase.code).toBe('string-code');
-    // expect(networkWithCodeOnDatabase.codeHash).toBeTruthy();
-    // expect(networkWithCodeOnDatabase.codeCurrentVersion).toBe(1);
+    expect(response.statusCode).toBe(400);
   });
 });

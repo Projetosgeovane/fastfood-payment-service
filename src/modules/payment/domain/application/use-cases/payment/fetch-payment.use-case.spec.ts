@@ -28,4 +28,11 @@ describe('FetchNetworksUseCase', () => {
 
     expect(result.isSuccess()).toBe(true);
   });
+
+  it('should return failure when payment is not found', async () => {
+    const result = await sut.execute({ id: 'non-existent-id' });
+
+    expect(result.isFailure()).toBe(true);
+    expect(result.value).toBeNull();
+  });
 });
