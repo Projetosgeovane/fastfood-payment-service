@@ -118,6 +118,13 @@ Use o seguinte comando para iniciar o debugging:
 
 `yarn test:debug`
 
+## Sonarqube
+
+![SonarQube Report](https://github.com/Projetosgeovane/fastfood-payment-service/blob/main/img/sonar.png?raw=true)
+
+Coverage
+
+![SonarQube Coverage](https://github.com/Projetosgeovane/fastfood-payment-service/blob/main/img/coverage.png?raw=true)
 
 ## APIs Disponíveis
 
