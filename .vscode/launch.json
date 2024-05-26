@@ -1,9 +1,20 @@
 {
   "configurations": [
-
   {
     "command": "yarn start:dev",
     "name": "Run yarn start:dev",
+    "request": "launch",
+    "type": "node-terminal"
+  },
+  {
+    "command": "yarn test:unit:watch",
+    "name": "Run yarn test:unit:watch",
+    "request": "launch",
+    "type": "node-terminal"
+  },
+  {
+    "command": "yarn test:e2e:watch",
+    "name": "Run yarn test:e2e:watch",
     "request": "launch",
     "type": "node-terminal"
   },
