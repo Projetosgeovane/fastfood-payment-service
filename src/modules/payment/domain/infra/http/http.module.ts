@@ -11,10 +11,12 @@ import { FetchPaymentsUseCase } from '../../application/use-cases/payment/fetch-
 import { MercadoPagoModule } from '../mercadoPago/mercado-pago.module';
 import { HandleWebhookPaymentController } from './controllers/payment/handle-webhook-payment.controller';
 import { HandleWebhookPaymentUseCase } from '../../application/use-cases/payment/handle-webhook-payment.use-case';
+import { PaymentsMessageController } from './controllers/payment/teste.controller';
 
 @Module({
   imports: [PersistenceModule, MercadoPagoModule],
   controllers: [
+    PaymentsMessageController,
     CreatePaymentController,
     HandleWebhookPaymentController,
     FetchPaymentsController,
@@ -29,4 +31,4 @@ import { HandleWebhookPaymentUseCase } from '../../application/use-cases/payment
     EditPaymentUseCase,
   ],
 })
-export class HttpModule {}
+export class HttpModule { }
